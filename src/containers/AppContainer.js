@@ -17,4 +17,8 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators(ActionCreators, dispatch);
 }
 
+AppContainer.navigationOptions = {
+    title: 'Main',
+};
+
 export default connect((state) => { return {} }, mapDispatchToProps)(AppContainer);

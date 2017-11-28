@@ -7,6 +7,7 @@ import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import reducer from './reducers';
 import AppContainer from './containers/AppContainer';
+import AppWithNavigationState from './navigators/AppNavigator';
 
 const loggerMiddleware = createLogger({ predicate: (getState, action) => __DEV__});
 
@@ -143,7 +144,7 @@ export default class Main extends React.Component {
     render() {
         return (
             <Provider store={store}>
-                <AppContainer /> 
+                <AppWithNavigationState /> 
            </Provider>
         );
     }
