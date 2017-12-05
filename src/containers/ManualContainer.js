@@ -1,10 +1,14 @@
+'use strict';
 import React from 'react';
-import { StyleSheet, Text, View, Picker, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, PickerIOS, TouchableHighlight, Platform } from 'react-native';
 import fireAPI from '../lib/fireAPI';
+import PickerAndroid from '../lib/pickerAndroid';
+
+let Picker = Platform.OS === 'ios' ? PickerIOS : PickerAndroid;
 
 export default class ManualScreen extends React.Component {
-    constructor() {
-        super();
+    constructor(props, context) {
+        super(props, context); 
         var myBoolean =  {'1': true, '0': false};
         this.state = {
             value: '',
@@ -37,7 +41,7 @@ export default class ManualScreen extends React.Component {
     _renderPickerItems() {
         let itemList = [];
         for (const key of Object.keys(this.state.zones)) {
-            itemList.push(<Picker.Item label={key} value={key} />);
+            itemList.push(<Picker.Item key={key} label={key} value={key} />);
         }
         return(itemList);
     }
