@@ -5,16 +5,57 @@ import fireAPI from '../lib/fireAPI';
 export default class ManualScreen extends React.Component {
     constructor() {
         super();
+        var myBoolean =  {'1': true, '0': false};
         this.state = {
             value: '',
+            zones: {},
+            buttonText: '',
+            myBoolean: {
+                1: true,
+                0: false,
+                false: 0,
+                true: 1
+                },
         }
-        this._renderPickerItems();
+        this._loadZones();
+        this._renderPickerItems = this._renderPickerItems.bind(this);
+        this._buttonText = this._buttonText.bind(this);
+        this._onPressButton = this._onPressButton.bind(this);
     }
-    
-    _renderPickerItems() {
+
+    _loadZones() {
        fireAPI.get('manualOverride').then((val) => {
-            console.log(val);
-        }); 
+            let retrievedZones = val;
+            let zones = {}
+            for (const key of Object.keys(retrievedZones)) {
+                zones[key] = this.state.myBoolean[retrievedZones[key].active];
+            }
+            this.setState({zones});
+        });
+    }
+ 
+    _renderPickerItems() {
+        let itemList = [];
+        for (const key of Object.keys(this.state.zones)) {
+            itemList.push(<Picker.Item label={key} value={key} />);
+        }
+        return(itemList);
+    }
+
+    _onPressButton() {
+        console.log(this.state.value, this.state.zones[this.state.value]); 
+        console.log(this.state.value, !this.state.zones[this.state.value]); 
+        fireAPI.put('manualOverride/' + this.state.value, {active: this.state.myBoolean[!this.state.zones[this.state.value]]});
+        this._loadZones();
+    }
+
+    _buttonText() {
+        if (this.state.zones[this.state.value]) {
+            return (<Text>Deactivate</Text>);
+        }
+        else {
+            return (<Text>Activate</Text>);
+        }
     }
 
     render() {
@@ -25,27 +66,12 @@ export default class ManualScreen extends React.Component {
                         selectedValue={this.state.value}
                         onValueChange={(itemValue, itemIndex) => this.setState({value: itemValue})}
                     >
-                            <Picker.Item label='Zone 1' value='1' />
-                            <Picker.Item label='z02' value='2' />
-                            <Picker.Item label='z01' value='1' />
-                            <Picker.Item label='z02' value='2' />
-                            <Picker.Item label='z01' value='1' />
-                            <Picker.Item label='z02' value='2' />
-                            <Picker.Item label='z01' value='1' />
-                            <Picker.Item label='z02' value='2' />
-                            <Picker.Item label='z01' value='1' />
-                            <Picker.Item label='z02' value='2' />
-                            <Picker.Item label='z01' value='1' />
-                            <Picker.Item label='z02' value='2' />
-                            <Picker.Item label='z01' value='1' />
-                            <Picker.Item label='z02' value='2' />
-                            <Picker.Item label='z01' value='1' />
-                            <Picker.Item label='z02' value='2' />
+                            {this._renderPickerItems()}
                     </Picker>
                 </View>
                 <View style={styles.button}>
                     <TouchableHighlight onPress={this._onPressButton}>
-                        <Text>Activate</Text>
+                        {this._buttonText()}
                     </TouchableHighlight>
                 </View>
             </View>

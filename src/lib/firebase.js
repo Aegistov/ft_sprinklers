@@ -8,6 +8,16 @@ const config = {
     storageBucket: "ft-sprinklers.appspot.com",
     messagingSenderId: "324804803769"
 };
-let fire = firebase.initializeApp(config);
+
+const kConfig = {
+    apiKey: "aAxhPEhI5yKEcsQJ1AXjufYehiZ7Nm0RwdpCCBIn",
+    authDomain: "sprink-3680f.firebaseapp.com",
+    databaseURL: "https://sprink-3680f.firebaseio.com",
+    projectId: "sprink-3680f",
+    storageBucket: "sprink-3680f.appspot.com",
+    messagingSenderId: "492472444407"
+}
+
+let fire = firebase.initializeApp(kConfig);
 
 module.exports.fireDB = fire.database();

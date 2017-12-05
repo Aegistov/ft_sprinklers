@@ -7,4 +7,15 @@ export default class fireAPI {
             return (retrievedObject);
         });
     }
+
+    static listen(route) {
+        return fireDB.ref(route).on('value', (snapshot) => {
+            let retrievedObject = snapshot.val();
+            return (retrievedObject);
+        });
+    }
+    
+    static put(route, obj) {
+        return fireDB.ref(route).update(obj);
+    }
 }
