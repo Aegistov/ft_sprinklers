@@ -20,6 +20,7 @@ export default class ManualScreen extends React.Component {
                 false: 0,
                 true: 1
                 },
+			prevActive:'',
         }
         this._loadZones();
         this._renderPickerItems = this._renderPickerItems.bind(this);
@@ -49,7 +50,15 @@ export default class ManualScreen extends React.Component {
     _onPressButton() {
         console.log(this.state.value, this.state.zones[this.state.value]); 
         console.log(this.state.value, !this.state.zones[this.state.value]); 
-        fireAPI.put('manualOverride/' + this.state.value, {active: this.state.myBoolean[!this.state.zones[this.state.value]]});
+		if (this.state.myBoolean[!this.state.zones[this.state.value] == 1]) { //if turning on zone
+			if (this.state.prevActive != '') { // if prevActive exists, turn it off
+				fireAPI.put('manualOverride/' + this.state.prevActive, {active: this.state.myBoolean[!this.state.zones[this.state.prevActive]]});
+			}
+		}
+        fireAPI.put('manualOverride/' + this.state.value, {active: this.state.myBoolean[!this.state.zones[this.state.value]]}); //turning on zone
+		if (this.state.myBoolean[!this.state.zones[this.state.value]] == 1) { //if turning on zone, set prevActive to current active zone
+			this.state.prevActive = this.state.value
+		}
         this._loadZones();
     }
 
