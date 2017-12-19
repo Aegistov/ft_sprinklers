@@ -2,7 +2,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, PickerIOS, TouchableHighlight, Platform } from 'react-native';
 import fireAPI from '../lib/fireAPI';
-import PickerAndroid from '../lib/pickerAndroid';
+import PickerAndroid from '../components/pickerAndroid';
 
 let Picker = Platform.OS === 'ios' ? PickerIOS : PickerAndroid;
 
