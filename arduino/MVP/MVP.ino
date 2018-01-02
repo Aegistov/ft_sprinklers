@@ -1,6 +1,3 @@
-#include <JsonListener.h>
-#include <JsonStreamingParser.h>
-
 #include <ArduinoSTL.h>
 
 #include <LinkedList.h>
@@ -253,6 +250,42 @@ String getData(String streamEvent)
   return (dat);
 }
 
+std::vector<JsonVariant> loadJson(String src)
+{
+  DEBUG("Initial: ");
+  DEBUGln(src);
+  String zoneDays = "{";
+  int start = src.indexOf("z") - 1;
+  int terminator = src.indexOf("}},") + 2;
+  zoneDays += src.substring(start, terminator);
+  zoneDays += "}";
+  DEBUG("Zone: ");
+  DEBUGln(zoneDays);
+  for (int i = 0; i < 5; i++)
+  {
+    start = src.indexOf("z", terminator) - 1;
+    terminator = src.indexOf("}},", terminator) + 2;
+    String test1 = new String("{");
+    test1 += src.substring(start, terminator);
+    DEBUG("TEST: ");
+    DEBUGln(test1);
+    delete test1;
+  }
+//  if (src.length() < 10)
+//  {
+//    std::vector<JsonVariant> vec;
+//    return vec;
+//  }
+//  else
+//  {
+//    String copy = "{";
+//    copy += src.substring(terminator, src.length() - terminator);
+//    DEBUG("SubString: ");
+//    DEBUGln(copy);
+//    loadJson(copy);
+//  }
+}
+
 const char *getSchedule(String result)
 {
   DEBUGln("result is:");
@@ -283,41 +316,16 @@ const char *getSchedule(String result)
     //DEBUG("program after");
     DEBUGln(testing);
   }
-  
+  loadJson(programSchedule);
   DEBUG("One Zone: ");
   DEBUGln(zoneDays);
-  //  DEBUG("Index of Program Schedule: ");
-  //  DEBUGln(result.indexOf("programSchedule"));
-  //  DEBUGln(result[899]);
-  //  DEBUG("Index of Sensor History: ");
-  //  DEBUGln(result.indexOf("sensorHistory"));
-  //  DEBUG(result[4639 - 2]);
-  //  DEBUG(result[4639 - 1]);
-  //  DEBUGln(result[4639]);
-  ////  StaticJsonBuffer<10000> jsonBuffer;
-
   //FAILS ON THIS SIZE
   const size_t bufferSizeFail = 113 * JSON_OBJECT_SIZE(1) + 16 * JSON_OBJECT_SIZE(7) + JSON_OBJECT_SIZE(16) + 1960;
   DEBUG("bufferSizeFail: ");
   DEBUGln(bufferSizeFail);
-  //  DynamicJsonBuffer jsonBuffer(bufferSize);
-  //
-  //  const char* json = "{\"programSchedule\":{\"z00\":{\"00\":{\"duration\":50},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z01\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z02\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z03\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z04\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z05\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z06\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z07\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z08\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z09\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z10\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z11\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z12\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z13\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z14\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z15\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}}}}";
   //FAILS ON SIZE ABOVE
 
-  //SUCCEEDS ON THIS SIZE
-  //const size_t bufferSize = 106 * JSON_OBJECT_SIZE(1) + 15 * JSON_OBJECT_SIZE(7) + JSON_OBJECT_SIZE(15) + 1840;
-  //DEBUG("bufferSize: ");
-  //DEBUGln(bufferSize);
-  //DynamicJsonBuffer jsonBuffer(bufferSize);
-
-  //const char* json = "{\"programSchedule\":{\"z00\":{\"00\":{\"duration\":50},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z01\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z02\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z03\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z04\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z05\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z06\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z07\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z08\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z09\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z10\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z11\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z12\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z13\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z14\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}}}}";
-
-  //SUCCEEDS ON SIZE ABOVE
   String zone = "{\"z00\":{\"00\":{\"duration\":50},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}}}";
-  
-  //JsonObject& root = jsonBuffer.parseObject(zone);
-
   const size_t bufferSize = 8*JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(7) + 130;
   DynamicJsonBuffer jsonBuffer(bufferSize);
 
@@ -338,15 +346,10 @@ const char *getSchedule(String result)
   vec.push_back(z00);
   DEBUG("Vec Size POST: ");
   Serial.println(vec.size());
-//  JsonVariant test = clone(jsonBuffer, z00);
   int z00_00_duration = vec[0]["00"]["duration"];
   Serial.println(z00_00_duration);
   DEBUG("Printing vec element: ");
-  //DEBUGln(vec[0]["duration"]);
-  //  const char *program = root["programSchedule"];
   const char* program = "";
-  //int t = root["z00"]["duration"];// "gps"
-  //  const char *program = "";
   DEBUG("Duration is:");
 //  DEBUGln(t);
   return (program);
