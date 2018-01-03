@@ -1,3 +1,6 @@
+#include <Time.h>
+#include <TimeLib.h>
+
 #include <ArduinoSTL.h>
 
 #include <LinkedList.h>
@@ -56,8 +59,6 @@
 #define DEBUGln(input)
 #endif
 
-class 
-
 WiFiSSLClient client;
 unsigned long lastConnectionTime = 0;
 const unsigned long postingInterval = 60L * 1000L; //60 seconds
@@ -72,6 +73,8 @@ unsigned long programZoneStart = 0;
 unsigned int seconds = 0;
 byte whichZone;
 //LinkedList<JsonObject> test;
+
+String data = "{\"z00\":{\"00\":{\"duration\":50},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z01\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z02\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z03\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z04\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z05\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z06\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z07\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z08\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z09\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z10\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z11\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z12\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z13\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z14\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z15\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z16\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z17\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z18\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z19\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z20\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z21\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z22\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z23\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}}}";
 
 /******************************************************/
 /**              funtion prototypes                  **/
@@ -98,6 +101,7 @@ void registerWriteBytes(const void* buffer, byte byteCount);
 void Blink(byte PIN, byte DELAY_MS);
 String getData(String streamEvent);
 boolean boolstring( String b );
+std::vector<JsonVariant> loadJson(String src);
 
 void setup()
 {
@@ -127,9 +131,13 @@ void setup()
   // scan for existing networks:
   DEBUGln("Scanning available networks...");
   listNetworks();
-  connectWiFi();
+  std::vector<JsonVariant> progSchedule = loadJson(data);
+  DEBUGln("Week Day: ");
+  Serial.println(weekday());
+  runSchedule(progSchedule);
+  //connectWiFi();
   /* httpRequest(); */
-  httpStream();
+  //httpStream();
 }
 
 void connectWiFi()
@@ -205,6 +213,31 @@ void httpStream()
   }
 }
 
+void   runSchedule(std::vector<JsonVariant> schedule)
+{
+  String today = "0";
+  today += String(weekday());
+  DEBUGln(today);
+  for (int i = 0; i < schedule.size(); i++)
+  {
+    if (schedule[i][today]["duration"] > 0)
+    {
+      DEBUGln("This zone is active today!");
+      int t = schedule[i][today]["duration"];
+      Serial.println(i);
+      Serial.println(t);
+      if (i < 12)
+        zoneON(byte(i));
+      //registerWriteBytes((void *)i, 1);
+    }
+    //registersWrite((byte)i);
+  }
+  byte  testStream[5] = {1, 3, 5, 7, 9};
+  registersWrite(1 - 1);
+  //registersWrite(2 - 1);
+  //  registersWrite(3 - 1);
+}
+
 String getResponse()
 {
   delay(1000);
@@ -252,38 +285,62 @@ String getData(String streamEvent)
 
 std::vector<JsonVariant> loadJson(String src)
 {
-  DEBUG("Initial: ");
-  DEBUGln(src);
-  String zoneDays = "{";
-  int start = src.indexOf("z") - 1;
-  int terminator = src.indexOf("}},") + 2;
-  zoneDays += src.substring(start, terminator);
-  zoneDays += "}";
-  DEBUG("Zone: ");
-  DEBUGln(zoneDays);
-  for (int i = 0; i < 5; i++)
+  const size_t              bufferSize = 8 * JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(7) + 130;
+  DynamicJsonBuffer         jsonBuffer(bufferSize);
+  std::vector<JsonVariant>  vec;
+  int                       zone = 0;
+  String                    zoneDays = "";
+  String                    key = "";
+  int                       start = src.indexOf("z") - 1;
+  int                       terminator = src.indexOf("}},") + 2;
+
+  while (start < src.length())
   {
+    zoneDays = "{";
+    zoneDays += src.substring(start, terminator);
+    zoneDays += "}";
+    DEBUG("Zone: ");
+    DEBUGln(zoneDays);
+    key = src.substring(start + 1, start + 4);
+    DEBUGln("Key");
+    DEBUGln(key);
+    JsonObject& root = jsonBuffer.parseObject(zoneDays);
+    if (!root.success())
+    {
+      DEBUGln("parsingObject() failed");
+    }
+    else {
+      DEBUGln("Success");
+      if (root.containsKey(key))
+      {
+        DEBUGln("Contains key");
+        JsonVariant z00 = root[key];
+        DEBUGln("Accessing Object");
+        int t = z00["00"]["duration"];
+        Serial.println(t);
+        DEBUG("Vec Size: ");
+        Serial.println(vec.size());
+        vec.push_back(z00);
+        DEBUG("Vec Size POST: ");
+        Serial.println(vec.size());
+        int z00_00_duration = vec[0]["00"]["duration"];
+        Serial.println(z00_00_duration);
+      }
+      else
+        DEBUGln("Key Not Found");
+    }
+    DEBUGln("Start and Terminator");
+    DEBUGln(start);
+    DEBUGln(terminator);
+    if (start == src.indexOf("z23", terminator) - 1)
+      break;
     start = src.indexOf("z", terminator) - 1;
-    terminator = src.indexOf("}},", terminator) + 2;
-    String test1 = new String("{");
-    test1 += src.substring(start, terminator);
-    DEBUG("TEST: ");
-    DEBUGln(test1);
-    delete test1;
+    terminator = src.indexOf("}},", start) + 2;
+    DEBUGln("Start and Terminator");
+    DEBUGln(start);
+    DEBUGln(terminator);
   }
-//  if (src.length() < 10)
-//  {
-//    std::vector<JsonVariant> vec;
-//    return vec;
-//  }
-//  else
-//  {
-//    String copy = "{";
-//    copy += src.substring(terminator, src.length() - terminator);
-//    DEBUG("SubString: ");
-//    DEBUGln(copy);
-//    loadJson(copy);
-//  }
+  return (vec);
 }
 
 const char *getSchedule(String result)
@@ -326,7 +383,7 @@ const char *getSchedule(String result)
   //FAILS ON SIZE ABOVE
 
   String zone = "{\"z00\":{\"00\":{\"duration\":50},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}}}";
-  const size_t bufferSize = 8*JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(7) + 130;
+  const size_t bufferSize = 8 * JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(7) + 130;
   DynamicJsonBuffer jsonBuffer(bufferSize);
 
   const char* json = "{\"z00\":{\"00\":{\"duration\":50},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}}}";
@@ -351,7 +408,7 @@ const char *getSchedule(String result)
   DEBUG("Printing vec element: ");
   const char* program = "";
   DEBUG("Duration is:");
-//  DEBUGln(t);
+  //  DEBUGln(t);
   return (program);
 }
 
@@ -602,12 +659,40 @@ void registersWriteBit(byte whichPin)
   digitalWrite(LATCHPIN, HIGH);
 }
 
+void registersWrite(byte Pin)
+{
+  byte bitPosition = Pin % 8;
+  byte byteToWrite = 0;
+  byte t[2] = {14};
+  byte  byteCount = 1;
+  bitSet(byteToWrite, bitPosition);
+  for (byte i = 0; i < byteCount; i++)
+  {
+    digitalWrite(LATCHPIN, LOW);
+    bitPosition = t[i] % 8;
+    byteToWrite = 0;
+    DEBUGln("Bit Position");
+    Serial.println(bitPosition);
+    DEBUGln("Byte To Write PRE");
+    Serial.println(byteToWrite);
+    bitSet(byteToWrite, bitPosition);
+    DEBUGln("Byte To Write POST");
+    Serial.println(byteToWrite);
+    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, byteToWrite);
+    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, 0x96);
+    
+    digitalWrite(LATCHPIN, HIGH);
+    delay(3000);
+  }
+}
+
 //writes a byte stream to the shift register daisy chain (up to 256 daisy chained shift registers)
 void registerWriteBytes(const void* buffer, byte byteCount)
 {
   digitalWrite(LATCHPIN, LOW);
+  byte jk[5] = {1, 2, 3, 4, 5};
   for (byte i = 0; i < byteCount; i++)
-    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, ((byte*)buffer)[i]);
+    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, jk[i]);
   digitalWrite(LATCHPIN, HIGH);
 }
 
