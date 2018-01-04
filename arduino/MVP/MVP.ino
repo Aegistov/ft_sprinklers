@@ -74,7 +74,7 @@ unsigned int seconds = 0;
 byte whichZone;
 //LinkedList<JsonObject> test;
 
-String data = "{\"z00\":{\"00\":{\"duration\":50},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z01\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z02\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z03\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z04\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z05\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z06\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z07\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z08\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z09\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z10\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z11\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z12\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z13\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z14\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z15\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z16\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z17\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z18\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z19\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z20\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z21\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z22\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z23\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}}}";
+String data = "{\"z00\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":60},\"04\":{\"duration\":0},\"05\":{\"duration\":60},\"06\":{\"duration\":0}},\"z01\":{\"00\":{\"duration\":60},\"01\":{\"duration\":0},\"02\":{\"duration\":60},\"03\":{\"duration\":0},\"04\":{\"duration\":60},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z02\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z03\":{\"00\":{\"duration\":0},\"01\":{\"duration\":0},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z04\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z05\":{\"00\":{\"duration\":0},\"01\":{\"duration\":0},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":0},\"05\":{\"duration\":60},\"06\":{\"duration\":0}},\"z06\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":60},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z07\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":0}},\"z08\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":0}},\"z09\":{\"00\":{\"duration\":40},\"01\":{\"duration\":0},\"02\":{\"duration\":60},\"03\":{\"duration\":30},\"04\":{\"duration\":60},\"05\":{\"duration\":0},\"06\":{\"duration\":0}},\"z10\":{\"00\":{\"duration\":0},\"01\":{\"duration\":0},\"02\":{\"duration\":20},\"03\":{\"duration\":10},\"04\":{\"duration\":0},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z11\":{\"00\":{\"duration\":30},\"01\":{\"duration\":20},\"02\":{\"duration\":10},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":0},\"06\":{\"duration\":40}},\"z12\":{\"00\":{\"duration\":20},\"01\":{\"duration\":40},\"02\":{\"duration\":10},\"03\":{\"duration\":0},\"04\":{\"duration\":60},\"05\":{\"duration\":20},\"06\":{\"duration\":0}},\"z13\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":40},\"04\":{\"duration\":30},\"05\":{\"duration\":0},\"06\":{\"duration\":0}},\"z14\":{\"00\":{\"duration\":10},\"01\":{\"duration\":20},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":10},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z15\":{\"00\":{\"duration\":30},\"01\":{\"duration\":20},\"02\":{\"duration\":10},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":0},\"06\":{\"duration\":0}},\"z16\":{\"00\":{\"duration\":0},\"01\":{\"duration\":0},\"02\":{\"duration\":40},\"03\":{\"duration\":40},\"04\":{\"duration\":0},\"05\":{\"duration\":10},\"06\":{\"duration\":60}},\"z17\":{\"00\":{\"duration\":60},\"01\":{\"duration\":0},\"02\":{\"duration\":30},\"03\":{\"duration\":10},\"04\":{\"duration\":0},\"05\":{\"duration\":20},\"06\":{\"duration\":0}},\"z18\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z19\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z20\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z21\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z22\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z23\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}}}";
 
 /******************************************************/
 /**              funtion prototypes                  **/
@@ -102,6 +102,7 @@ void Blink(byte PIN, byte DELAY_MS);
 String getData(String streamEvent);
 boolean boolstring( String b );
 std::vector<JsonVariant> loadJson(String src);
+void  writeToRegisters(byte *selectedPins);
 
 void setup()
 {
@@ -218,22 +219,32 @@ void   runSchedule(std::vector<JsonVariant> schedule)
   String today = "0";
   today += String(weekday());
   DEBUGln(today);
-  for (int i = 0; i < schedule.size(); i++)
+  std::vector<byte> zones;
+  for (int i = 0; i < 7; i++)
   {
-    if (schedule[i][today]["duration"] > 0)
+    today = "0";
+    today += String(i);
+    DEBUGln(today);
+    for (int i = 0; i < schedule.size(); i++)
     {
-      DEBUGln("This zone is active today!");
-      int t = schedule[i][today]["duration"];
-      Serial.println(i);
-      Serial.println(t);
-      if (i < 12)
-        zoneON(byte(i));
-      //registerWriteBytes((void *)i, 1);
+      if (schedule[i][today]["duration"] > 0)
+      {
+        DEBUGln("This zone is active today!");
+        int t = schedule[i][today]["duration"];
+        Serial.println(i);
+        Serial.println(t);
+        zones.push_back(i + 1);
+        if (i < 12)
+          zoneON(byte(i));
+        //registerWriteBytes((void *)i, 1);
+      }
+      //registersWrite((byte)i);
     }
-    //registersWrite((byte)i);
+    writeToRegisters(zones);
+    delay(5000);
   }
-  byte  testStream[5] = {1, 3, 5, 7, 9};
-  registersWrite(1 - 1);
+  //byte  testStream[5] = {1, 3, 5, 7, 9};
+  //registersWrite(1 - 1);
   //registersWrite(2 - 1);
   //  registersWrite(3 - 1);
 }
@@ -663,27 +674,73 @@ void registersWrite(byte Pin)
 {
   byte bitPosition = Pin % 8;
   byte byteToWrite = 0;
-  byte t[2] = {14};
-  byte  byteCount = 1;
-  bitSet(byteToWrite, bitPosition);
+  std::vector<byte> pins;
+  byte t[4] = {14, 10, 1, 6};
+  byte  byteCount = 4;
+  //bitSet(byteToWrite, bitPosition);
   for (byte i = 0; i < byteCount; i++)
   {
-    digitalWrite(LATCHPIN, LOW);
+    //digitalWrite(LATCHPIN, LOW);
+    pins.push_back(t[i]);
     bitPosition = t[i] % 8;
-    byteToWrite = 0;
-    DEBUGln("Bit Position");
-    Serial.println(bitPosition);
+//    DEBUGln("Bit Position");
+//    Serial.println(bitPosition);
     DEBUGln("Byte To Write PRE");
     Serial.println(byteToWrite);
-    bitSet(byteToWrite, bitPosition);
+    byte temp = 0;
+    bitSet(temp, bitPosition);
+    byteToWrite |= temp;
     DEBUGln("Byte To Write POST");
     Serial.println(byteToWrite);
-    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, byteToWrite);
-    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, 0x96);
-    
-    digitalWrite(LATCHPIN, HIGH);
-    delay(3000);
+//    byte x = 0x40;
+//    byte y = 0x01;
+//    x |= y;
+//    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, byteToWrite);
+//    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, 0x96);
+//    
+//    digitalWrite(LATCHPIN, HIGH);
+//    //delay(3000);
   }
+  //writeToRegisters(pins);
+}
+
+int   whichRegister(float num)
+{
+  Serial.println(num / 8);
+  return (ceil(num / 8));
+}
+
+void  writeToRegisters(std::vector<byte> selectedPins)
+{
+  byte  registers[REGISTERCOUNT];
+  for (int i = 0; i < REGISTERCOUNT; i++)
+  {
+    registers[i] = byte(0);
+    Serial.println(registers[i]);
+  }
+  digitalWrite(LATCHPIN, LOW);
+  for (int i = 0; i < selectedPins.size(); i++)
+  {
+    DEBUGln("Register: ");
+    int reg = whichRegister(float(selectedPins[i]));
+    Serial.println(reg);
+    byte  bitPosition = (selectedPins[i] - 1) % 8;
+    byte  toWrite = 0;
+    bitSet(toWrite, bitPosition);
+    DEBUGln("Register's Byte Pre: ");
+    Serial.println(registers[reg - 1], BIN);
+    registers[reg - 1] |= toWrite;
+    DEBUGln("Pin to OR");
+    Serial.println(toWrite, BIN);
+    DEBUGln("Register's Byte: ");
+    Serial.println(registers[reg - 1], BIN);
+  }
+  for (int i = REGISTERCOUNT - 1; i >= 0; i--)
+  {
+    Serial.println(registers[i], BIN);
+    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, registers[i]);
+  }
+  digitalWrite(LATCHPIN, HIGH);
 }
 
 //writes a byte stream to the shift register daisy chain (up to 256 daisy chained shift registers)
