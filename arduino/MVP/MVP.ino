@@ -225,14 +225,14 @@ void   runSchedule(std::vector<JsonVariant> schedule)
     today = "0";
     today += String(i);
     DEBUGln(today);
-    for (int i = 0; i < schedule.size(); i++)
+    for (int i = 0; i < 4; i++)
     {
       if (schedule[i][today]["duration"] > 0)
       {
         DEBUGln("This zone is active today!");
         int t = schedule[i][today]["duration"];
         Serial.println(i);
-        Serial.println(t);
+        //Serial.println(t);
         zones.push_back(i + 1);
         if (i < 12)
           zoneON(byte(i));
@@ -724,6 +724,8 @@ void  writeToRegisters(std::vector<byte> selectedPins)
     DEBUGln("Register: ");
     int reg = whichRegister(float(selectedPins[i]));
     Serial.println(reg);
+    DEBUGln("Activating Zone: ");
+    Serial.println(selectedPins[i]);
     byte  bitPosition = (selectedPins[i] - 1) % 8;
     byte  toWrite = 0;
     bitSet(toWrite, bitPosition);
