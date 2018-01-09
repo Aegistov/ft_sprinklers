@@ -1,21 +1,19 @@
 #include <Time.h>
 #include <TimeLib.h>
-
 #include <ArduinoSTL.h>
-
 #include <LinkedList.h>
-
 #include <WiFi101.h>
 #include <ArduinoJson.h>
 #include <SPI.h>
 
-#define WIFI_SSID    "42US Guests"
-#define WIFI_PASSWORD "42Events"
-//#define WIFI_SSID    "Bambi"
-//#define WIFI_PASSWORD "1234567890"
+//#define WIFI_SSID    "42US Guests"
+//#define WIFI_PASSWORD "42Events"
+#define WIFI_SSID    "Bambi"
+#define WIFI_PASSWORD "1234567890"
 
 #define FIREBASE_HOST "sprink-3680f.firebaseio.com"
 #define FIREBASE_AUTH "aAxhPEhI5yKEcsQJ1AXjufYehiZ7Nm0RwdpCCBIn"
+/* #define FIREBASE_AUTH "AIzaSyB3RZQS46cqoVGDwvTVlih6N01LRD3atRY" */
 
 /* #define FIREBASE_HOST  "ft-sprinklers.firebaseio.com" */
 /* #define FIREBASE_AUTH  "AIzaSyAiPg4F4t0kVQ4AqLZISYeJhOlQ8yf15pw" */
@@ -74,7 +72,6 @@ unsigned int seconds = 0;
 byte whichZone;
 //LinkedList<JsonObject> test;
 
-String data = "{\"z00\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":60},\"04\":{\"duration\":0},\"05\":{\"duration\":60},\"06\":{\"duration\":0}},\"z01\":{\"00\":{\"duration\":60},\"01\":{\"duration\":0},\"02\":{\"duration\":60},\"03\":{\"duration\":0},\"04\":{\"duration\":60},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z02\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z03\":{\"00\":{\"duration\":0},\"01\":{\"duration\":0},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z04\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z05\":{\"00\":{\"duration\":0},\"01\":{\"duration\":0},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":0},\"05\":{\"duration\":60},\"06\":{\"duration\":0}},\"z06\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":60},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z07\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":0}},\"z08\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":0}},\"z09\":{\"00\":{\"duration\":40},\"01\":{\"duration\":0},\"02\":{\"duration\":60},\"03\":{\"duration\":30},\"04\":{\"duration\":60},\"05\":{\"duration\":0},\"06\":{\"duration\":0}},\"z10\":{\"00\":{\"duration\":0},\"01\":{\"duration\":0},\"02\":{\"duration\":20},\"03\":{\"duration\":10},\"04\":{\"duration\":0},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z11\":{\"00\":{\"duration\":30},\"01\":{\"duration\":20},\"02\":{\"duration\":10},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":0},\"06\":{\"duration\":40}},\"z12\":{\"00\":{\"duration\":20},\"01\":{\"duration\":40},\"02\":{\"duration\":10},\"03\":{\"duration\":0},\"04\":{\"duration\":60},\"05\":{\"duration\":20},\"06\":{\"duration\":0}},\"z13\":{\"00\":{\"duration\":0},\"01\":{\"duration\":60},\"02\":{\"duration\":0},\"03\":{\"duration\":40},\"04\":{\"duration\":30},\"05\":{\"duration\":0},\"06\":{\"duration\":0}},\"z14\":{\"00\":{\"duration\":10},\"01\":{\"duration\":20},\"02\":{\"duration\":0},\"03\":{\"duration\":0},\"04\":{\"duration\":10},\"05\":{\"duration\":0},\"06\":{\"duration\":60}},\"z15\":{\"00\":{\"duration\":30},\"01\":{\"duration\":20},\"02\":{\"duration\":10},\"03\":{\"duration\":0},\"04\":{\"duration\":0},\"05\":{\"duration\":0},\"06\":{\"duration\":0}},\"z16\":{\"00\":{\"duration\":0},\"01\":{\"duration\":0},\"02\":{\"duration\":40},\"03\":{\"duration\":40},\"04\":{\"duration\":0},\"05\":{\"duration\":10},\"06\":{\"duration\":60}},\"z17\":{\"00\":{\"duration\":60},\"01\":{\"duration\":0},\"02\":{\"duration\":30},\"03\":{\"duration\":10},\"04\":{\"duration\":0},\"05\":{\"duration\":20},\"06\":{\"duration\":0}},\"z18\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z19\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z20\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z21\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z22\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}},\"z23\":{\"00\":{\"duration\":60},\"01\":{\"duration\":60},\"02\":{\"duration\":60},\"03\":{\"duration\":60},\"04\":{\"duration\":60},\"05\":{\"duration\":60},\"06\":{\"duration\":60}}}";
 
 /******************************************************/
 /**              funtion prototypes                  **/
@@ -132,13 +129,13 @@ void setup()
   // scan for existing networks:
   DEBUGln("Scanning available networks...");
   listNetworks();
-  std::vector<JsonVariant> progSchedule = loadJson(data);
-  DEBUGln("Week Day: ");
-  Serial.println(weekday());
-  runSchedule(progSchedule);
-  //connectWiFi();
+  /* std::vector<JsonVariant> progSchedule = loadJson(data); */
+  /* DEBUGln("Week Day: "); */
+  /* Serial.println(weekday()); */
+  /* runSchedule(progSchedule); */
+  connectWiFi();
   /* httpRequest(); */
-  //httpStream();
+  httpStream();
 }
 
 void connectWiFi()
@@ -190,7 +187,7 @@ void httpRequest()
   else {
     DEBUGln("Error connecting to Firebase");
   }
-  DEBUGln(getResponse());
+  /* DEBUGln(getResponse()); */
 }
 
 void httpStream()
@@ -220,29 +217,29 @@ void   runSchedule(std::vector<JsonVariant> schedule)
   today += String(weekday());
   DEBUGln(today);
   std::vector<byte> zones;
-  for (int i = 0; i < 7; i++)
+  for (int i = 0; i < 1; i++)
   {
     today = "0";
     today += String(i);
     DEBUGln(today);
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < schedule.size() - 1; i++)
     {
       if (schedule[i][today]["duration"] > 0)
       {
         DEBUGln("This zone is active today!");
         int t = schedule[i][today]["duration"];
         Serial.println(i);
-        //Serial.println(t);
-        zones.push_back(i + 1);
-        if (i < 12)
-          zoneON(byte(i));
+        Serial.println(t);
+        /* zones.push_back(i + 1); */
+        zoneON(byte(i));
         //registerWriteBytes((void *)i, 1);
+		    delay(2000);
       }
       //registersWrite((byte)i);
     }
-    writeToRegisters(zones);
-    delay(5000);
+    /* writeToRegisters(zones); */
   }
+	zonesOFF();
   //byte  testStream[5] = {1, 3, 5, 7, 9};
   //registersWrite(1 - 1);
   //registersWrite(2 - 1);
@@ -492,15 +489,16 @@ void loop()
     int start = response.indexOf("event: put");
     result += response.substring(start + 11);
   }
-  else if (response.length() > 0)
-  {
-    DEBUGln("Collecting response...");
-    result += response;
-  }
   else if (result.startsWith("event: keep-alive"))
   {
     DEBUGln(result);
     result = "";
+  }
+  else if (response.length() > 0)
+  {
+    DEBUGln("Collecting response...");
+    result += response;
+	DEBUGln(response);
   }
   else if (result.startsWith("data"))
   {
@@ -508,11 +506,9 @@ void loop()
     result = result.substring(6);
     result.trim();
     String programSchedule = "{" + result.substring((result.indexOf("programSchedule") - 1), (result.indexOf("sensorHistory") - 2)) + "}";
-    //   int str_len = result.length() + 1;
-    //   char result_array[str_len];
-    //   result.toCharArray(result_array, str_len);
-    //   result = "";
-    getSchedule(programSchedule);
+	DEBUGln(programSchedule);
+	std::vector<JsonVariant> progSchedule = loadJson(programSchedule);
+	runSchedule(progSchedule);
   }
   /* if (!client.connected()){ */
   /*  DEBUGln(); */
