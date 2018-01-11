@@ -233,7 +233,8 @@ void   runSchedule(std::vector<JsonVariant> schedule)
         /* zones.push_back(i + 1); */
         zoneON(byte(i));
         //registerWriteBytes((void *)i, 1);
-		    delay(2000);
+	    /* delay(2000); */
+	    delay(int(schedule[i][today]["duration"]) * 1000);
       }
       //registersWrite((byte)i);
     }
