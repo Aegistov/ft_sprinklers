@@ -1,16 +1,67 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableHighlight, FlatList } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableHighlight, FlatList, Image } from 'react-native';
 import fireAPI from '../lib/fireAPI';
 
+class DayColumn extends Component {
+    render() {
+        return (
+            <View style={styles.column}>
+                <Text>Hello World</Text>
+            </View>
+        );
+    }
+}
+
 class ScheduleRow extends Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                data: props.data,
+                rowData: []
+            }
+        }
+        _renderRowData() {
+            console.log("Loading Row Data");
+            console.log(this.props.data);
+            ren = [];
+            for (var key in Object.keys(this.props.data)) {
+                let q = this.props.data;
+                console.log(key);
+                console.log(this.props.data["0" + key]);
+                console.log(this.props.data["0" + key]['duration']);
+                if (this.props.data["0" + key]['duration'] > 0) {
+                    console.log('<View><Text>X</Text></View>');
+                    ren.push(1);
+                }
+                else {
+                    console.log('<View><Text>E</Text></View>');
+                    ren.push(0);
+                }
+            }
+            const listItems = ren.map((r) => r == 1 ? <View style={{width: 20}}><Image style={styles.drop} source={require('../img/drop.png')}/></View> : <View style={{width: 20}}><Text>y</Text></View>);
+            console.log('test');
+            console.log(ren);
+            return (listItems);
+        }
+        _renderItem = ({item}) => (
+            <DayColumn
+                duration={item[Object.keys(item)]}
+            />
+        );
         render() {
         return (
+            <View style={styles.scheduleRow}>
             <TouchableHighlight>
                 <View>
                     <Text>{this.props.zone}</Text>
-                    <Text>{this.props.data['00']['duration']}</Text>
                 </View>
             </TouchableHighlight>
+                <View>
+                </View>
+                <View style={styles.column}>
+                    {this._renderRowData()}
+                </View>
+            </View>
         );
     }
 }
@@ -29,11 +80,8 @@ export default class ScheduleScreen extends Component {
             let retrievedZones = val;
             let zones = []
             for (const key of Object.keys(retrievedZones)) {
-                console.log(key, retrievedZones[key]);
-                console.log(retrievedZones[key]['00']['duration']);
                 let zone = {};
                 zone[key] = retrievedZones[key];
-                console.log(Object.keys(zone)[0], zone[Object.keys(zone)[0]]);
                 zones.push(zone);
             }
             this.setState({zones:zones});
@@ -94,5 +142,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#228B22',
         width: 240,
         alignItems: 'center',
+    },
+    scheduleRow: {
+        flex: 0.2,
+        flexDirection:'row',
+        backgroundColor: '#6AAE3C',
+        alignItems: 'center',
+    },
+    column: {
+        flexDirection:'row',
+        backgroundColor: '#6AA44C',
+        alignItems: 'center',
+    },
+    drop: {
+        width: 10,
+        height: 10,
     }
 });
