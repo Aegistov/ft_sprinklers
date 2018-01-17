@@ -38,7 +38,7 @@ class ScheduleRow extends Component {
                     ren.push(0);
                 }
             }
-            const listItems = ren.map((r) => r == 1 ? <View style={{width: 20}}><Image style={styles.drop} source={require('../img/drop.png')}/></View> : <View style={{width: 20}}><Text>y</Text></View>);
+            const listItems = ren.map((r) => r == 1 ? <View style={styles.day}><Image style={styles.drop} source={require('../img/drop.png')}/></View> : <View style={styles.day}><Text>y</Text></View>);
             console.log('test');
             console.log(ren);
             return (listItems);
@@ -53,13 +53,38 @@ class ScheduleRow extends Component {
             <View style={styles.scheduleRow}>
             <TouchableHighlight>
                 <View>
-                    <Text>{this.props.zone}</Text>
+                    <Text style={styles.zoneButton}>{this.props.zone}</Text>
                 </View>
             </TouchableHighlight>
-                <View>
-                </View>
                 <View style={styles.column}>
                     {this._renderRowData()}
+                </View>
+            </View>
+        );
+    }
+}
+
+class ScheduleHeader extends Component {
+    constructor() {
+        super();
+        this.state = {
+            text: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+        };
+    }
+
+    _renderHeader() {
+        const scheduleHeader = this.state.text.map((t) => <View style={styles.day}><Text style={styles.scheduleHeaderText}>{t}</Text></View>);
+        return (scheduleHeader);
+    }
+
+    render() {
+        return (
+            <View style={styles.scheduleHeader}>
+                <View>
+                    <Text style={{fontSize:14, fontWeight:'bold', color:'#80CBC4', padding:12, marginTop: 10}}>ZONE</Text>
+                </View>
+                <View style={styles.column}>
+                    {this._renderHeader()}      
                 </View>
             </View>
         );
@@ -101,6 +126,7 @@ export default class ScheduleScreen extends Component {
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Next 7 Days</Text>
                 </View>
+                <ScheduleHeader />
                 <View style={styles.graph}>
                     <FlatList data={this.state.zones} renderItem={this._renderItem} keyExtractor={item => Object.keys(item)[0]}/>
                 </View>
@@ -131,11 +157,26 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 48,
     },
+    scheduleHeader: {
+        flex: .1,
+        flexDirection: 'row',
+        alignItems: 'stretch',
+        width: 340,
+    },
+    headerCol: {
+        flex: .14,
+        borderRadius: 4,
+        borderWidth: 0.5,
+        borderColor: 'red',
+    },
+    scheduleHeaderText: {
+        fontSize: 24,
+        color: '#80CBC4',
+    },
     graph: {
         flex: 0.6,
-        backgroundColor: 'blue',
+        backgroundColor: '#fff',
         width: 340,
-        alignItems: 'center',
     },
     footer: {
         flex: 0.2,
@@ -144,18 +185,33 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     scheduleRow: {
-        flex: 0.2,
+        flex: 1,
         flexDirection:'row',
-        backgroundColor: '#6AAE3C',
-        alignItems: 'center',
+        backgroundColor: '#fff',
+        alignItems: 'stretch',
+    },
+    zoneButton: {
+        fontSize: 24,
+        padding: 10,
+        flex: 0.166,
+        color: '#80CBC4',
     },
     column: {
         flexDirection:'row',
-        backgroundColor: '#6AA44C',
+        flex: 1,
+        backgroundColor: '#fff',
+        borderRadius: 4,
+        borderWidth: 0.5,
+        borderColor: 'red',
+    },
+    day: {
+        flex: 0.2,
         alignItems: 'center',
+        padding: 5,
+        marginTop: 10,
     },
     drop: {
-        width: 10,
-        height: 10,
+        width: 24,
+        height: 24,
     }
 });
