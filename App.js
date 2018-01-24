@@ -8,7 +8,20 @@ import ManualScreen from './src/containers/ManualContainer';
 
 const TabNavConfig = {
     tabBarOptions: {
+        activeTintColor: '#00897B',
+        inactiveTintColor: '#80CBC4',
         style: {
+            marginTop: 25,
+            backgroundColor: '#FFF',
+            shadowOpacity: 0,
+        },
+        labelStyle: {
+            fontSize: 8,
+        },
+        indicatorStyle: {
+            backgroundColor: '#80CBC4'
+        },
+        tabStyle: {
         }
     }
 }
