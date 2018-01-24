@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableHighlight, FlatList, Image } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableHighlight, FlatList, Image, Modal } from 'react-native';
 import fireAPI from '../lib/fireAPI';
 
 class DayColumn extends Component {
@@ -102,14 +102,17 @@ class ScheduleHeader extends Component {
 
 export default class ScheduleScreen extends Component {
     constructor() {
-        super();
+        super(); 
         this.state = {
             zones: [],
-            selectedZones: []
+            selectedZones: [],
+            modalVisible: false,
         }
         this._loadZones = this._loadZones.bind(this);
         this._selectedCallback = this._selectedCallback.bind(this);
         this._renderSelected = this._renderSelected.bind(this);
+        this._openModal = this._openModal.bind(this);
+        this._closeModal = this._closeModal.bind(this);
         this._loadZones();
     }
 
@@ -139,7 +142,7 @@ export default class ScheduleScreen extends Component {
     _selectedCallback(active, id) {
         var selectedZones = this.state.selectedZones;
         selectedZones[id - 1] = active;
-        this.setState({selectedZones});
+        this.setState({selectedZones}); 
     }
     
     _renderSelected() {
@@ -155,9 +158,32 @@ export default class ScheduleScreen extends Component {
         return (active);
     }
 
+    _openModal() {
+        this.setState({modalVisible: true})
+    }
+
+    _closeModal() {
+        this.setState({modalVisible: false})
+    }
+
     render() {
         return (
             <View style={styles.container}>
+                <Modal
+                    visible={this.state.modalVisible}
+                    animationType={'slide'}
+                    onRequestClose={() => this._closeModal()} 
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.innerContainer}>
+                            <Text>This is content inside of modal component</Text>
+                            <Text>{this._renderSelected()}</Text>
+                            <TouchableHighlight onPress={() =>this._closeModal()}>
+                                <View><Text>X</Text></View>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </Modal>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Weekly Schedule</Text>
                 </View>
@@ -167,7 +193,7 @@ export default class ScheduleScreen extends Component {
                 </View>
                 <View style={styles.footer}>
                     <Text style={{height: 20, margin: 5}}>{this._renderSelected()}</Text>
-                    <TouchableHighlight>
+                    <TouchableHighlight onPress={() => this._openModal()}>
                         <View style={styles.circle}>
                             <Text style={{color: '#80CBC4'}}>Modify</Text>
                         </View>
