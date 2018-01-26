@@ -201,7 +201,7 @@ String  httpRequest()
     delay(10 * 1000);
     client.stop();
     /* DEBUGln(getResponse()); */
-    /* httpStream(client); */
+//    httpStream();
     return (response);
 }
 
@@ -240,15 +240,18 @@ void    runSchedule(std::vector<JsonVariant> schedule)
             continue;
         today = "0";
         today += String(i);
+        int n = schedule.size();
         DEBUGln("today is:" + today);
-        for (int i = 0; i < schedule.size() - 1; i++)
+        DEBUGln("schedule size" + String(n));
+        /* DEBUGln(shedule.size()) */
+        for (int i = 0; i < n - 1; i++)
         {
             if (schedule[i][today]["duration"] > 0)
             {
                 DEBUGln("This zone is active today!");
                 int t = schedule[i][today]["duration"];
-                Serial.println(i);
-                Serial.println(t);
+                Serial.println("zone:" + String(i) + " duration:" + String(t));
+                /* Serial.println(t); */
                 /* zones.push_back(i + 1); */
                 zoneON(byte(i));
                 //registerWriteBytes((void *)i, 1);
@@ -270,7 +273,7 @@ void    updateSchedule(String data)
 {
     StaticJsonBuffer<200> jsonBuffer2;
     data = data.substring(6);
-    DEBUGln(data);
+    /* DEBUGln(data); */
     JsonObject& root = jsonBuffer2.parseObject(data);
     if (!root.success())
     {
@@ -292,10 +295,8 @@ void    updateSchedule(String data)
     duration = dat.toInt();
 
     DEBUGln("Schedule Changed!");
-    DEBUGln(zone);
-    DEBUGln(day_str);
+    DEBUGln("Day:" + day_str + " Zone:" + String(zone));
     progSchedule[zone][day_str]["duration"] = duration;
-    runSchedule(progSchedule);
 }
 
 String getResponse(WiFiSSLClient client)
@@ -657,7 +658,7 @@ void    zonesOFF()
 //turns ON one zone only, all others off
 void    zoneON(byte which)
 {
-    DEBUG("Turning on Zone: " + which);
+    DEBUGln("Turning on Zone..." + String(which));
     registersWriteBit(which);
 }
 

@@ -19,8 +19,8 @@ export default class ManualScreen extends React.Component {
                 0: false,
                 false: 0,
                 true: 1
-                },
-			prevActive:'',
+            },
+            prevActive:'',
         }
         this._loadZones();
         this._renderPickerItems = this._renderPickerItems.bind(this);
@@ -29,7 +29,7 @@ export default class ManualScreen extends React.Component {
     }
 
     _loadZones() {
-       fireAPI.get('manualOverride').then((val) => {
+        fireAPI.get('manualOverride').then((val) => {
             let retrievedZones = val;
             let zones = {}
             for (const key of Object.keys(retrievedZones)) {
@@ -38,7 +38,7 @@ export default class ManualScreen extends React.Component {
             this.setState({zones});
         });
     }
- 
+
     _renderPickerItems() {
         let itemList = [];
         for (const key of Object.keys(this.state.zones)) {
@@ -50,15 +50,15 @@ export default class ManualScreen extends React.Component {
     _onPressButton() {
         console.log(this.state.value, this.state.zones[this.state.value]); 
         console.log(this.state.value, !this.state.zones[this.state.value]); 
-		if (this.state.myBoolean[!this.state.zones[this.state.value] == 1]) { //if turning on zone
-			if (this.state.prevActive != '') { // if prevActive exists, turn it off
-				fireAPI.put('manualOverride/' + this.state.prevActive, {active: this.state.myBoolean[!this.state.zones[this.state.prevActive]]});
-			}
-		}
+        if (this.state.myBoolean[!this.state.zones[this.state.value] == 1]) { //if turning on zone
+            if (this.state.prevActive != '') { // if prevActive exists, turn it off
+                fireAPI.put('manualOverride/' + this.state.prevActive, {active: this.state.myBoolean[!this.state.zones[this.state.prevActive]]});
+            }
+        }
         fireAPI.put('manualOverride/' + this.state.value, {active: this.state.myBoolean[!this.state.zones[this.state.value]]}); //turning on zone
-		if (this.state.myBoolean[!this.state.zones[this.state.value]] == 1) { //if turning on zone, set prevActive to current active zone
-			this.state.prevActive = this.state.value
-		}
+        if (this.state.myBoolean[!this.state.zones[this.state.value]] == 1) { //if turning on zone, set prevActive to current active zone
+            this.state.prevActive = this.state.value
+        }
         this._loadZones();
     }
 
@@ -74,19 +74,19 @@ export default class ManualScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.picker}>
-                    <Picker
-                        selectedValue={this.state.value}
-                        onValueChange={(itemValue, itemIndex) => this.setState({value: itemValue})}
-                    >
-                            {this._renderPickerItems()}
-                    </Picker>
-                </View>
-                <View style={styles.button}>
-                    <TouchableHighlight onPress={this._onPressButton}>
-                        {this._buttonText()}
-                    </TouchableHighlight>
-                </View>
+            <View style={styles.picker}>
+            <Picker
+            selectedValue={this.state.value}
+            onValueChange={(itemValue, itemIndex) => this.setState({value: itemValue})}
+            >
+            {this._renderPickerItems()}
+            </Picker>
+            </View>
+            <View style={styles.button}>
+            <TouchableHighlight onPress={this._onPressButton}>
+            {this._buttonText()}
+            </TouchableHighlight>
+            </View>
             </View>
         );
     }
