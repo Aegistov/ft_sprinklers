@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableHighlight, FlatList, Image } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableHighlight, FlatList, Image, Modal } from 'react-native';
 import fireAPI from '../lib/fireAPI';
 
 class DayColumn extends Component {
@@ -17,30 +17,25 @@ class ScheduleRow extends Component {
             super(props);
             this.state = {
                 data: props.data,
-                rowData: []
-            }
+                rowData: [],
+                backgroundColor: '#FFF',
+                color: '#80CBC4',
+            };
+            this._onPressButton = this._onPressButton.bind(this);
+            this._renderRowData = this._renderRowData.bind(this);
         }
         _renderRowData() {
-            console.log("Loading Row Data");
-            console.log(this.props.data);
             ren = [];
             for (var key in Object.keys(this.props.data)) {
                 let q = this.props.data;
-                console.log(key);
-                console.log(this.props.data["0" + key]);
-                console.log(this.props.data["0" + key]['duration']);
                 if (this.props.data["0" + key]['duration'] > 0) {
-                    console.log('<View><Text>X</Text></View>');
                     ren.push(1);
                 }
                 else {
-                    console.log('<View><Text>E</Text></View>');
                     ren.push(0);
                 }
             }
-            const listItems = ren.map((r) => r == 1 ? <View style={styles.day}><Image style={styles.drop} source={require('../img/drop.png')}/></View> : <View style={styles.day}><Text>y</Text></View>);
-            console.log('test');
-            console.log(ren);
+            const listItems = ren.map((r) => r == 1 ? <View style={styles.day}><Image style={styles.drop} source={require('../img/drop.png')}/></View> : <View style={styles.day}></View>);
             return (listItems);
         }
         _renderItem = ({item}) => (
@@ -48,12 +43,26 @@ class ScheduleRow extends Component {
                 duration={item[Object.keys(item)]}
             />
         );
+        _onPressButton()
+        {
+            var active;
+            if (this.state.backgroundColor == '#FFF') {
+                active = 1;
+                this.setState({backgroundColor: '#80CBC4', color: '#FFF'})
+            }
+            else {
+                active = 0;
+                this.setState({backgroundColor: '#FFF', color: '#80CBC4'})
+            }
+            console.log("It Works"); 
+            this.props.selected(active, this.props.zone);
+        }
         render() {
         return (
             <View style={styles.scheduleRow}>
-            <TouchableHighlight>
-                <View>
-                    <Text style={styles.zoneButton}>{this.props.zone}</Text>
+            <TouchableHighlight onPress={this._onPressButton}>
+                <View style={{backgroundColor: this.state.backgroundColor, width: 60, height: 60, flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{color: this.state.color, fontSize: 24}}>{this.props.zone}</Text>
                 </View>
             </TouchableHighlight>
                 <View style={styles.column}>
@@ -93,11 +102,18 @@ class ScheduleHeader extends Component {
 
 export default class ScheduleScreen extends Component {
     constructor() {
-        super();
-        this._loadZones();
+        super(); 
         this.state = {
-            zones: []
+            zones: [],
+            selectedZones: [],
+            modalVisible: false,
         }
+        this._loadZones = this._loadZones.bind(this);
+        this._selectedCallback = this._selectedCallback.bind(this);
+        this._renderSelected = this._renderSelected.bind(this);
+        this._openModal = this._openModal.bind(this);
+        this._closeModal = this._closeModal.bind(this);
+        this._loadZones();
     }
 
     _loadZones() {
@@ -109,31 +125,78 @@ export default class ScheduleScreen extends Component {
                 zone[key] = retrievedZones[key];
                 zones.push(zone);
             }
-            this.setState({zones:zones});
+            let selectedZones = new Array(zones.length + 1).join('0').split('').map(parseFloat);
+            this.setState({zones:zones, selectedZones});
         });
     }
 
     _renderItem = ({item}) => (
             <ScheduleRow
-                zone={Object.keys(item)[0]}
+                zone={parseInt(Object.keys(item)[0].slice(1)) + 1}
                 data={item[Object.keys(item)[0]]}
+                zoneState={this.state.selectedZones}
+                selected={this._selectedCallback}
             />
     );
+
+    _selectedCallback(active, id) {
+        var selectedZones = this.state.selectedZones;
+        selectedZones[id - 1] = active;
+        this.setState({selectedZones}); 
+    }
+    
+    _renderSelected() {
+        var sZ = this.state.selectedZones;
+        var active =  [];
+        console.log(sZ);
+        for (var i = 0; i < sZ.length; i++) {
+            if (sZ[i] == 1) {
+                active.push(i + 1);
+            }
+        }
+        console.log(active);
+        return (active);
+    }
+
+    _openModal() {
+        this.setState({modalVisible: true})
+    }
+
+    _closeModal() {
+        this.setState({modalVisible: false})
+    }
 
     render() {
         return (
             <View style={styles.container}>
+                <Modal
+                    visible={this.state.modalVisible}
+                    animationType={'slide'}
+                    onRequestClose={() => this._closeModal()} 
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.innerContainer}>
+                            <Text>This is content inside of modal component</Text>
+                            <Text>{this._renderSelected()}</Text>
+                            <TouchableHighlight onPress={() =>this._closeModal()}>
+                                <View><Text>X</Text></View>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </Modal>
                 <View style={styles.header}>
-                    <Text style={styles.headerText}>Next 7 Days</Text>
+                    <Text style={styles.headerText}>Weekly Schedule</Text>
                 </View>
                 <ScheduleHeader />
                 <View style={styles.graph}>
                     <FlatList data={this.state.zones} renderItem={this._renderItem} keyExtractor={item => Object.keys(item)[0]}/>
                 </View>
                 <View style={styles.footer}>
-                    <Text>Selection: 1,3,4,5,9,10...</Text>
-                    <TouchableHighlight>
-                        <Text>Modify</Text>
+                    <Text style={{height: 20, margin: 5}}>{this._renderSelected()}</Text>
+                    <TouchableHighlight onPress={() => this._openModal()}>
+                        <View style={styles.circle}>
+                            <Text style={{color: '#80CBC4'}}>Modify</Text>
+                        </View>
                     </TouchableHighlight>
                 </View>
             </View>
@@ -148,14 +211,24 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 20
     },
+    circle: {
+        height: 60,
+        width: 60,
+        borderRadius: 30,
+        borderWidth: 2,
+        borderColor: '#80CBC4',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     header: {
         flex: 0.1,
-        backgroundColor: 'red',
         width: 340,
         alignItems: 'center',
+        marginBottom: 10
     },
     headerText: {
-        fontSize: 48,
+        fontSize: 32,
+        color: '#80CBC4',
     },
     scheduleHeader: {
         flex: .1,
@@ -167,7 +240,7 @@ const styles = StyleSheet.create({
         flex: .14,
         borderRadius: 4,
         borderWidth: 0.5,
-        borderColor: 'red',
+        borderColor: '#FFF',
     },
     scheduleHeaderText: {
         fontSize: 24,
@@ -180,7 +253,6 @@ const styles = StyleSheet.create({
     },
     footer: {
         flex: 0.2,
-        backgroundColor: '#228B22',
         width: 240,
         alignItems: 'center',
     },
@@ -190,19 +262,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'stretch',
     },
-    zoneButton: {
-        fontSize: 24,
-        padding: 10,
-        flex: 0.166,
-        color: '#80CBC4',
-    },
     column: {
         flexDirection:'row',
         flex: 1,
         backgroundColor: '#fff',
         borderRadius: 4,
         borderWidth: 0.5,
-        borderColor: 'red',
+        borderColor: '#FFF',
     },
     day: {
         flex: 0.2,
