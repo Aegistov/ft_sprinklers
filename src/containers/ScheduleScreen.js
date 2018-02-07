@@ -2,11 +2,52 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, StatusBar, TouchableHighlight, FlatList, Image, Modal } from 'react-native';
 import fireAPI from '../lib/fireAPI';
 
-class DayColumn extends Component {
+class ModalRow extends Component {
     render() {
         return (
-            <View style={styles.column}>
-                <Text>Hello World</Text>
+            <View>
+                <Text>test{this.props.zone}</Text>
+            </View>
+        );
+    }
+}
+
+class DayColumn extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            chosenZones: {},
+        }
+        this._load = this._load.bind(this);
+        this._load();
+    }
+
+    _load() {
+        let zoneDurations = [];
+        console.log('w');
+        for (var i in this.props.zones) {
+            if (this.props.selected[i] == 1) {
+                console.log(this.props.zones[i]);
+                zoneDurations.push(this.props.zones[i]);
+                for (var j in this.props.zones[i]["z0" + i]) {
+                    console.log(zoneDurations);
+                }
+            }
+        }
+        this.state.chosenZones = zoneDurations;
+        console.log(this.state.chosenZones);
+    }
+
+    _renderItem = ({item}) => (
+        <ModalRow
+            zone={parseInt(Object.keys(item)[0].slice(1)) + 1}
+        />
+    );
+
+    render() {
+        return (
+            <View>
+                <FlatList data={this.state.chosenZones} renderItem={this._renderItem} keyExtractor={item => Object.keys(item)[0]}/>
             </View>
         );
     }
@@ -113,6 +154,7 @@ export default class ScheduleScreen extends Component {
         this._renderSelected = this._renderSelected.bind(this);
         this._openModal = this._openModal.bind(this);
         this._closeModal = this._closeModal.bind(this);
+        this._renderModal = this._renderModal.bind(this);
         this._loadZones();
     }
 
@@ -128,6 +170,10 @@ export default class ScheduleScreen extends Component {
             let selectedZones = new Array(zones.length + 1).join('0').split('').map(parseFloat);
             this.setState({zones:zones, selectedZones});
         });
+    }
+
+    _renderModal() {
+        return(<DayColumn selected={this.state.selectedZones} zones={this.state.zones}/>);
     }
 
     _renderItem = ({item}) => (
@@ -166,6 +212,10 @@ export default class ScheduleScreen extends Component {
         this.setState({modalVisible: false})
     }
 
+    _saveChanges() {
+        fireAPI.put('programSchedule', {'z00':{'00':{'duration': 20}}});
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -176,8 +226,11 @@ export default class ScheduleScreen extends Component {
                 >
                     <View style={styles.modalContainer}>
                         <View style={styles.innerContainer}>
-                            <Text>This is content inside of modal component</Text>
-                            <Text>{this._renderSelected()}</Text>
+                            <ScheduleHeader />
+                            {this._renderModal()}
+                            <TouchableHighlight onPress={() =>this._saveChanges()}>
+                                <View><Text>Save</Text></View>
+                            </TouchableHighlight>
                             <TouchableHighlight onPress={() =>this._closeModal()}>
                                 <View><Text>X</Text></View>
                             </TouchableHighlight>
