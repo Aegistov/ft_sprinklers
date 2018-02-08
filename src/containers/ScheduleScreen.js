@@ -1,12 +1,39 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableHighlight, FlatList, Image, Modal } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableHighlight, FlatList, Image, Modal, Button } from 'react-native';
 import fireAPI from '../lib/fireAPI';
 
 class ModalRow extends Component {
+    constructor(props) {
+        super(props);
+        this._renderRowData = this._renderRowData.bind(this);
+    }
+
+    _onPressButton() {
+        console.log('h');
+    }
+
+    _renderRowData() {
+        let q = this.props.data;
+        const listItems = Object.entries(q).map((pair) =>
+            <View style={styles.day, {marginRight: 5, width:40}}>
+                <Text style={{flex: .5, alignItems: 'center', fontSize: 24}}>{pair[1]['duration']}</Text>
+                <View style={{flex: .5, flexDirection: 'row'}}>
+                    <Button onPress={() => {console.log("Doh"); pair[1]['duration'] += 5; console.log(pair[1]['duration']);this._renderRowData();}} title={"+"} color={"#80CBC4"} />
+                    <Button onPress={this._onPressButton} title={"-"} color={"red"} />
+                </View>
+            </View>);
+        return (listItems);
+    }
+
     render() {
         return (
-            <View>
-                <Text>test{this.props.zone}</Text>
+            <View style={styles.scheduleRow}>
+                <View style={{backgroundColor: '#80CBC4', width: 30, height: 60, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text>{this.props.zone}</Text>
+                </View>
+                <View style={styles.column}>
+                    {this._renderRowData()}
+                </View>
             </View>
         );
     }
@@ -19,6 +46,7 @@ class DayColumn extends Component {
             chosenZones: {},
         }
         this._load = this._load.bind(this);
+        this._cb = this._cb.bind(this);
         this._load();
     }
 
@@ -27,10 +55,8 @@ class DayColumn extends Component {
         console.log('w');
         for (var i in this.props.zones) {
             if (this.props.selected[i] == 1) {
-                console.log(this.props.zones[i]);
                 zoneDurations.push(this.props.zones[i]);
                 for (var j in this.props.zones[i]["z0" + i]) {
-                    console.log(zoneDurations);
                 }
             }
         }
@@ -38,9 +64,15 @@ class DayColumn extends Component {
         console.log(this.state.chosenZones);
     }
 
+    _cb(){
+        console.log('i');
+    }
+
     _renderItem = ({item}) => (
         <ModalRow
             zone={parseInt(Object.keys(item)[0].slice(1)) + 1}
+            data={item[Object.keys(item)[0]]}
+            callback={this._cb}
         />
     );
 
@@ -68,7 +100,7 @@ class ScheduleRow extends Component {
         _renderRowData() {
             ren = [];
             for (var key in Object.keys(this.props.data)) {
-                let q = this.props.data;
+                let q  = this.props.data;
                 if (this.props.data["0" + key]['duration'] > 0) {
                     ren.push(1);
                 }
@@ -108,7 +140,7 @@ class ScheduleRow extends Component {
             </TouchableHighlight>
                 <View style={styles.column}>
                     {this._renderRowData()}
-                </View>
+                </View> 
             </View>
         );
     }
@@ -155,6 +187,7 @@ export default class ScheduleScreen extends Component {
         this._openModal = this._openModal.bind(this);
         this._closeModal = this._closeModal.bind(this);
         this._renderModal = this._renderModal.bind(this);
+        this._modalCallback = this._modalCallback.bind(this);
         this._loadZones();
     }
 
@@ -173,7 +206,11 @@ export default class ScheduleScreen extends Component {
     }
 
     _renderModal() {
-        return(<DayColumn selected={this.state.selectedZones} zones={this.state.zones}/>);
+        return(<DayColumn
+                    selected={this.state.selectedZones}
+                    zones={this.state.zones}
+                    callback={this._modalCallback}
+            />);
     }
 
     _renderItem = ({item}) => (
@@ -184,6 +221,10 @@ export default class ScheduleScreen extends Component {
                 selected={this._selectedCallback}
             />
     );
+
+    _modalCallback(obj) {
+        console.log("Activated");
+    }
 
     _selectedCallback(active, id) {
         var selectedZones = this.state.selectedZones;
@@ -213,7 +254,7 @@ export default class ScheduleScreen extends Component {
     }
 
     _saveChanges() {
-        fireAPI.put('programSchedule', {'z00':{'00':{'duration': 20}}});
+        fireAPI.put('programSchedule/z00/00', {'duration': 20});
     }
 
     render() {
@@ -225,14 +266,14 @@ export default class ScheduleScreen extends Component {
                     onRequestClose={() => this._closeModal()} 
                 >
                     <View style={styles.modalContainer}>
+                        <ScheduleHeader />
                         <View style={styles.innerContainer}>
-                            <ScheduleHeader />
                             {this._renderModal()}
                             <TouchableHighlight onPress={() =>this._saveChanges()}>
                                 <View><Text>Save</Text></View>
                             </TouchableHighlight>
                             <TouchableHighlight onPress={() =>this._closeModal()}>
-                                <View><Text>X</Text></View>
+                                <View><Text>Close</Text></View>
                             </TouchableHighlight>
                         </View>
                     </View>
@@ -263,6 +304,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         alignItems: 'center',
         marginTop: 20
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: '#FFF',
+        alignItems: 'stretch',
+    },
+    innerContainer: {
+        flex: .9,
+        backgroundColor: '#FFF',
+        alignItems: 'stretch',
     },
     circle: {
         height: 60,
