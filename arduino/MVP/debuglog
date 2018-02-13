@@ -1,0 +1,84 @@
+Zone: {"z06":{"00":{"duration":0},"01":{"duration":60},"02":{"duration":0},"03":{"duration":0},"04":{"duration":60},"05":{"duration":0},"06":{"duration":60}}}
+Key
+z06
+Success
+Contains key
+Accessing Object
+0
+Vec Size: 6
+Vec Size POST: 7
+0
+Start and Terminator
+926
+1076
+Start and Terminator
+1077
+1228
+Zone: {"z07":{"00":{"duration":0},"01":{"duration":60},"02":{"duration":0},"03":{"duration":60},"04":{"duration":60},"05":{"duration":60},"06":{"duration":0}}}
+Key
+z07
+parsingObject() failed
+Start and Terminator
+1077
+1228
+Start and Terminator
+1229
+1381
+Zone: {"z08":{"00":{"duration":0},"01":{"duration":60},"02":{"duration":60},"03":{"duration":60},"04":{"duration":60},"05":{"duration":60},"06":{"duration":0}}}
+Key
+z08
+parsingObject() failed
+Start and Terminator
+1229
+1381
+Start and Terminator
+1382
+1533
+Zone: {"z09":{"00":{"duration":40},"01":{"duration":0},"02":{"duration":60},"03":{"duration":30},"04":{"duration":60},"05":{"duration":0},"06":{"duration":0}}}
+Key
+z09
+parsingObject() failed
+Start and Terminator
+1382
+1533
+Start and Terminator
+1534
+1684
+Zone: {"z10":{"00":{"duration":0},"01":{"duration":0},"02":{"duration":20},"03":{"duration":10},"04":{"duration":0},"05":{"duration":0},"06":{"duration":60}}}
+Key
+z10
+parsingObject() failed
+Start and Terminator
+1534
+1684
+Start and Terminator
+1685
+1836
+Zone: {"z11":{"00":{"duration":1},"01":{"duration":20},"02":{"duration":10},"03":{"duration":0},"04":{"duration":42},"05":{"duration":0},"06":{"duration":40}}}
+Key
+z11
+parsingObject() failed
+Start and Terminator
+1685
+1836
+Start and Terminator
+1837
+1989
+Zone: {"z12":{"00":{"duration":20},"01":{"duration":40},"02":{"duration":10},"03":{"duration":0},"04":{"duration":60},"05":{"duration":60},"06":{"duration":0}}}
+Key
+z12
+parsingObject() failed
+Start and Terminator
+1837
+1989
+Start and Terminator
+1990
+2140
+Zone: {"z13":{"00":{"duration":0},"01":{"duration":60},"02":{"duration":0},"03":{"duration":40},"04":{"duration":30},"05":{"duration":0},"06":{"duration":0}}}
+Key
+z13
+parsingObject() failed
+Start and Terminator
+1990
+2140
+Start and Terminator

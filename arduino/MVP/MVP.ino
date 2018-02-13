@@ -3,19 +3,24 @@
 #include <LinkedList.h>
 #include <WiFi101.h>
 #include <ArduinoJson.h>
+#include <HttpClient.h>
 #include <SPI.h>
 
 /* #define WIFI_SSID		"42US Guests" */
 /* #define WIFI_PASSWORD	"42Events" */
-#define WIFI_SSID		"Bambi"
-#define WIFI_PASSWORD	"1234567890"
+#define WIFI_SSID		"IOT"
+#define WIFI_PASSWORD	"rabbitcloud!"
+/* #define WIFI_SSID    "Bambi" */
+/* #define WIFI_PASSWORD "1234567890" */
 
 #define FIREBASE_HOST	"sprink-3680f.firebaseio.com"
+#define FIREBASE_FUNC1_HOST	"us-central1-sprink-3680f.cloudfunctions.net"
 #define FIREBASE_AUTH	"aAxhPEhI5yKEcsQJ1AXjufYehiZ7Nm0RwdpCCBIn"
 
 #define SCHEDULE_PATH	"/programSchedule.json"
 #define OVERIDE_PATH	"/manualOverride.json"
 #define PATH			"/.json"
+#define TIME_PATH		"/date?format=X"
 
 #define LATCHPIN		3
 #define CLOCKPIN		4
@@ -58,6 +63,8 @@ WiFiSSLClient client2;
 unsigned long lastConnectionTime = 0;
 const unsigned long postingInterval = 60L * 1000L; //60 seconds
 int status = WL_IDLE_STATUS;
+long syncTime = 5 * 1000;
+long lastTime = millis();
 
 /* moteino */
 byte whichZone;
@@ -73,11 +80,11 @@ void connectWiFi();
 void printWifiStatus();
 String httpRequest();
 void httpStream();
+void firebase_function_getDate();
 void runSchedule(std::vector<JsonVariant> schedule);
-void updateSchedule(String data);
+void updateSchedule(String &data);
 String getResponse(WiFiSSLClient client);
 String getPath(String streamEvent);
-String getData(String streamEvent);
 std::vector<JsonVariant> loadJson(String src);
 const char *getSchedule(String result);
 boolean getStatus(String streamEvent);
@@ -86,17 +93,17 @@ void loop();
 void printMacAddress();
 void listNetworks();
 void printEncryptionType(int thisType);
-void stopAndResetProgram();
 void zonesOFF();
 void zoneON(byte which);
 void registersClear();
 void registersAllOn();
 void registersWriteBit(byte whichPin);
-void registersWrite(byte Pin);
 int whichRegister(float num);
+void registersWrite(byte Pin);
 void registerWriteBytes(std::vector<byte> selectedPins);
-void registerWriteBytes(const void* buffer, byte byteCount);
 void Blink(byte PIN, byte DELAY_MS);
+void stopAndResetProgram();
+void registerWriteBytes(const void* buffer, byte byteCount);
 
 std::vector<JsonVariant> progSchedule;
 bool isRun = false;
@@ -106,9 +113,27 @@ bool isRun = false;
 //	char *token = std::strtok(input, "/");
 //	while (token != NULL) {
 //		DEBUGln(token);
-//		token = std::strtok(NULL, "/")
+//loo/		token = std::strtok(NULL, "/")
 //	}
 //}
+
+#ifdef __arm__
+// should use uinstd.h to define sbrk but Due causes a conflict
+extern "C" char* sbrk(int incr);
+#else  // __ARM__
+extern char *__brkval;
+#endif  // __arm__
+
+int freeMemory() {
+    char top;
+#ifdef __arm__
+    return &top - reinterpret_cast<char*>(sbrk(0));
+#elif defined(CORE_TEENSY) || (ARDUINO > 103 && ARDUINO != 151)
+    return &top - __brkval;
+#else  // __arm__
+    return __brkval ? &top - __brkval : &top - __malloc_heap_start;
+#endif  // __arm__
+}
 
 void    setup()
 {
@@ -121,10 +146,10 @@ void    setup()
 
     //Initialize serial and wait for port to open:
     Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial connection
-    }
-
+    /* while (!Serial) { */
+    /*     ; // wait for serial connection */
+    /* } */
+    /*  */
     // check for the presence of the shield:
     if (WiFi.status() == WL_NO_SHIELD) {
         DEBUGln("WiFi shield not present");
@@ -144,7 +169,9 @@ void    setup()
     /* runSchedule(progSchedule); */
     connectWiFi();
     /* httpRequest(); */
-    httpStream();
+    /* testON(); */
+    testOFF();
+    /* httpStream(); */
 }
 
 void    connectWiFi()
@@ -201,7 +228,7 @@ String  httpRequest()
     delay(10 * 1000);
     client.stop();
     /* DEBUGln(getResponse()); */
-//    httpStream();
+    //    httpStream();
     return (response);
 }
 
@@ -226,6 +253,61 @@ void    httpStream()
     }
 }
 
+int strpos(char * haystack, char * needle,int offset) 
+{
+  char * Pointer;
+  Pointer = strstr(haystack+offset, needle)+offset;
+  return(&Pointer[0] - &haystack[0]);
+} 
+
+void    firebase_function_getDate()
+{
+    WiFiClient cl;
+    DEBUGln("Connecting to firebase function");
+    if (cl.connect(FIREBASE_FUNC1_HOST, 80))
+    {
+        DEBUGln("Connected");
+        cl.println("GET " TIME_PATH  " HTTP/1.0");
+        cl.println("Host: " FIREBASE_FUNC1_HOST);
+        cl.println("Connection: Close");
+        cl.println();
+    }
+    else {
+        DEBUGln("Error accessing Firebase function");
+    }
+    String result = "";
+    delay(2000);
+    int readlen = cl.available();
+    char buffer[readlen + 1];
+    int i = 0;
+    while (cl.available()) {
+        char c = cl.read();
+        buffer[i++] = c;
+    }
+    buffer[i] = '\0';
+    int pos = strpos(buffer, "\n\n", 0);
+    Serial.print(buffer);
+    Serial.print("Needle found at:"); Serial.println(pos);
+    Serial.print(buffer[pos]);
+    /* char *ptr; */
+    /* ptr = buffer; */
+    /* while (*ptr) */
+    /* { */
+    /*     DEBUGln(*(ptr-1)); */
+    /*     Serial.println(*ptr); */
+    /*     if (*(ptr-1) == '\n' && *ptr == '\n') */
+    /*     { */
+    /*         DEBUGln("HERE!"); */
+    /*         DEBUGln(*ptr); */
+    /*         ptr++; */
+    /*         break; */
+    /*     } */
+    /*     ptr++; */
+    /* } */
+    /* DEBUGln(buffer); */
+    cl.stop();
+}
+
 void    runSchedule(std::vector<JsonVariant> schedule)
 {
     if (isRun == false)
@@ -242,15 +324,15 @@ void    runSchedule(std::vector<JsonVariant> schedule)
         today += String(i);
         int n = schedule.size();
         DEBUGln("today is:" + today);
-        DEBUGln("schedule size" + String(n));
+        /* DEBUGln("schedule size" + String(n)); */
         /* DEBUGln(shedule.size()) */
         for (int i = 0; i < n - 1; i++)
         {
             if (schedule[i][today]["duration"] > 0)
             {
-                DEBUGln("This zone is active today!");
+                /* DEBUGln("This zone is active today!"); */
                 int t = schedule[i][today]["duration"];
-                Serial.println("zone:" + String(i) + " duration:" + String(t));
+                /* Serial.println("zone:" + String(i) + " duration:" + String(t)); */
                 /* Serial.println(t); */
                 /* zones.push_back(i + 1); */
                 zoneON(byte(i));
@@ -258,18 +340,12 @@ void    runSchedule(std::vector<JsonVariant> schedule)
                 delay(1000);
                 /* delay(int(schedule[i][today]["duration"]) * 1000); */
             }
-            //registersWrite((byte)i);
         }
-        /* registerWriteBytes(zones); */
     }
     zonesOFF();
-    //byte	testStream[5] = {1, 3, 5, 7, 9};
-    //registersWrite(1 - 1);
-    //registersWrite(2 - 1);
-    //	registersWrite(3 - 1);
 }
 
-void    updateSchedule(String data)
+void    updateSchedule(String &data)
 {
     StaticJsonBuffer<200> jsonBuffer2;
     data = data.substring(6);
@@ -301,14 +377,15 @@ void    updateSchedule(String data)
 
 String getResponse(WiFiSSLClient client)
 {
-    delay(1000);
-    int readSize = client.available();
+    long timeOut = 1000;
+    long lt = millis();
     String result = "";
-    while (client.available()) {
-        char c = client.read();
-        result += c;
+    while((millis()-lt) < timeOut){
+        while (client.available()) {
+            char c = client.read();
+            result += c;
+        }
     }
-    /* DEBUG(result); */
     return (result);
 }
 
@@ -328,21 +405,21 @@ String  getPath(String streamEvent)
     return (path);
 }
 
-String  getData(String streamEvent)
-{
-    StaticJsonBuffer<200> jsonBuffer;
-    streamEvent = streamEvent.substring(19); // extract json object
-    JsonObject& root = jsonBuffer.parseObject(streamEvent);
-    if (!root.success())
-    {
-        DEBUGln("parsingObject() failed");
-        return "";
-    }
-    String dat = root["data"];
-    DEBUG("data is:");
-    DEBUGln(dat);
-    return (dat);
-}
+/* String  getData(String streamEvent) */
+/* { */
+/*     StaticJsonBuffer<200> jsonBuffer; */
+/*     streamEvent = streamEvent.substring(19); // extract json object */
+/*     JsonObject& root = jsonBuffer.parseObject(streamEvent); */
+/*     if (!root.success()) */
+/*     { */
+/*         DEBUGln("parsingObject() failed"); */
+/*         return ""; */
+/*     } */
+/*     String dat = root["data"]; */
+/*     DEBUG("data is:"); */
+/*     DEBUGln(dat); */
+/*     return (dat); */
+/* } */
 
 std::vector<JsonVariant> loadJson(String src)
 {
@@ -477,7 +554,6 @@ boolean getStatus(String streamEvent)
 {
     StaticJsonBuffer<200> jsonBuffer;
     streamEvent = streamEvent.substring(19);// extract json object
-    DEBUGln(streamEvent);
     JsonObject& root = jsonBuffer.parseObject(streamEvent);
     if (!root.success())
     {
@@ -500,80 +576,72 @@ byte    getZone(String path)
     return (whichZone);
 }
 
-String response = "";
-String result = "";
 void    loop()
 {
+    testON();
+    freeMemory();
+    std::string *something = new std::string("New String");
+    delete something;
+    String response = "";
     response = getResponse(client2);
     if (response.startsWith("event: patch"))
     {
-        result += response;
         DEBUGln("patching!");
-        if (result.indexOf("manualOverride") != -1)
+        if (response.indexOf("manualOverride") != -1)
         {
-            String path = getPath(result);
-            String zone = path.substring(path.indexOf("manualOverride" + 14)); //trim off manualOverride
-            Serial.println(zone);
-            boolean active = getStatus(result); //get zone number from zone name: (i.e z00)
+            String path = getPath(response);
+            String zone = path.substring(path.indexOf("/z" + 1));
+            Serial.println("printing zone: " + zone);
+            boolean active = getStatus(response); //get zone number from zone name: (i.e z00)
             whichZone = getZone(zone);
             if (!active)
                 zonesOFF();
             else if (whichZone > 0)
             {
                 DEBUGln(whichZone);
+                zonesOFF();
                 zoneON(whichZone - 1);
             }
             else
                 DEBUGln("Invalid ON");
         }
-        else if (result.indexOf("programSchedule") != -1)
+        else if (response.indexOf("programSchedule") != -1)
+        {
+            int start = response.indexOf("event: put");
             DEBUGln("handle change in schedule");
-        result = "";
+            if (!progSchedule.empty() && response.indexOf("programSchedule") != -1)
+            {
+                response += response.substring(start + 11);
+                DEBUGln(response);
+                updateSchedule(response);
+            }
+        }
     }
     else if (response.indexOf("event: put") != -1)
     {
         int start = response.indexOf("event: put");
-        if (!progSchedule.empty() && response.indexOf("programSchedule") != -1) {
-            result += response.substring(start + 11);
-            DEBUGln(result);
-            updateSchedule(result);
-            result = "";
-        }
-        else
-            result += response.substring(start + 11);
-    }
-    else if (result.startsWith("event: keep-alive"))
-    {
-        /* Serial.println(httpRequest()); */
-        isRun = true;
-        runSchedule(progSchedule);
-        isRun = false;
-        DEBUGln(result);
-        result = "";
-    }
-    else if (response.length() > 0)
-    {
-        DEBUGln("Collecting response...");
-        result += response;
-        DEBUGln(response);
-    }
-    else if (result.startsWith("data"))
-    {
+        response = response.substring(start + 11);
         DEBUGln("Work with schedule");
-        result = result.substring(6);
-        result.trim();
-        String programSchedule = "{" + result.substring((result.indexOf("programSchedule") - 1), (result.indexOf("sensorHistory") - 2)) + "}";
+        response = response.substring(6);
+        response.trim();
+        String programSchedule = "{" + response.substring((response.indexOf("programSchedule") - 1), (response.indexOf("sensorHistory") - 2)) + "}";
         DEBUGln(programSchedule);
         progSchedule = loadJson(programSchedule);
-        result = "";
     }
-    /* if (!client.connected()){ */
-    /*	DEBUGln(); */
-    /*	DEBUGln("disconnecting from server."); */
-    /*	client.stop(); */
+    else if (response.startsWith("event: keep-alive"))
+    {
+        isRun = true;
+        zonesOFF;
+        /* runSchedule(progSchedule); */
+        /* firebase_function_getDate(); */
+        isRun = false;
+    }
+    /* if(millis() - lastTime > syncTime) */
+    /* { */
+    /*     lastTime = millis(); */
+    /*     firebase_function_getDate(); */
     /* } */
 }
-
 
 //Network Stuff
 void    printMacAddress()
@@ -651,14 +719,14 @@ void    printEncryptionType(int thisType)
 //all zones OFF
 void    zonesOFF()
 {
-    DEBUG("Turning OFF Zone: ");
+    DEBUGln("Turning OFF Zone: ");
     registersClear();
 }
 
 //turns ON one zone only, all others off
 void    zoneON(byte which)
 {
-    DEBUGln("Turning on Zone..." + String(which));
+    DEBUGln("Turning on Zone..." + String(which + 1));
     registersWriteBit(which);
 }
 
@@ -670,6 +738,55 @@ void    registersClear()
     digitalWrite(LATCHPIN, HIGH);
 }
 
+void    registersWriteBitOFF(byte whichPin)
+{
+    byte bitPosition = whichPin % 8;
+    int zeroFills = (REGISTERCOUNT - 1) - (whichPin / 8);
+
+    if (zeroFills < 0) { //whichPin was "out of bounds"
+        DEBUGln("requested bit out of bounds (ie learger than available register bits to set)");
+        registersClear();
+        return;
+    }
+
+    digitalWrite(LATCHPIN, LOW);
+    for (byte i = 0; i < zeroFills; i++)
+        shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, 0xFF);
+
+    byte byteToWrite = 65535;
+    bitClear(byteToWrite, bitPosition);
+    shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, byteToWrite);
+
+    for (byte i = 0; i < REGISTERCOUNT - zeroFills - 1; i++)
+        shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, 0xFF);
+    digitalWrite(LATCHPIN, HIGH);
+}
+
+void testON()
+{
+    int i = 0;
+    while(i < 16)
+    {
+        DEBUGln("testing...");
+        delay(3 * 1000);
+        zoneON(byte(i));
+        i++;
+    }
+}
+
+void testOFF()
+{
+    registersAllOn();
+    int i = 0;
+    while(i < 16)
+    {
+        DEBUGln("testing...");
+        delay(3 * 1000);
+        registersWriteBitOFF(byte(i));
+        i++;
+    }
+}
+
 void registersAllOn()
 {
     digitalWrite(LATCHPIN, LOW);
@@ -677,7 +794,6 @@ void registersAllOn()
         shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, 0xFF);
     digitalWrite(LATCHPIN, HIGH);
 }
-
 
 //writes a single bit to a daisy chain of up to 32 shift registers (max 16 IOShields) chained via LATCHPIN, CLOCKPIN, DATAPIN
 void    registersWriteBit(byte whichPin)
