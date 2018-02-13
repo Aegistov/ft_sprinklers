@@ -169,8 +169,6 @@ void    setup()
     /* runSchedule(progSchedule); */
     connectWiFi();
     /* httpRequest(); */
-    /* testON(); */
-    testOFF();
     /* httpStream(); */
 }
 
@@ -578,7 +576,11 @@ byte    getZone(String path)
 
 void    loop()
 {
-    testON();
+    /* For Testing only */
+    testON(); 
+    /* testOFF(); */
+    /* For Testing only */
+
     freeMemory();
     std::string *something = new std::string("New String");
     delete something;
